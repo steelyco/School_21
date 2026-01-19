@@ -1,0 +1,7 @@
+FROM openjdk:8-jdk-alpine
+WORKDIR /hotel-service
+RUN apk add --no-cache bash
+COPY ./target ./target
+COPY ./wait-for-it.sh ./wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+CMD ./wait-for-it.sh psgr:5432 && java -jar ./target/hotel-service-0.0.1-SNAPSHOT.jar

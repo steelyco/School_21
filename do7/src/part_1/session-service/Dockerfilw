@@ -1,0 +1,11 @@
+FROM openjdk:8-jdk-alpine
+WORKDIR /session-service
+RUN apk add --no-cache bash maven
+COPY ./.mvn ./.mvn 
+COPY ./pom.xml ./pom.xml
+RUN mvn dependency:go-offline
+COPY ./src ./src
+COPY ./wait-for-it.sh ./wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+CMD ./wait-for-it.sh psgr:5432 && mvn spring-boot:run
+

@@ -1,0 +1,54 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+ENV['VAGRANT_SERVER_URL'] = 'https://vagrant.elab.pro'
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "manager01" do |manager01|
+    manager01.vm.hostname = "manager1"
+    manager01.vm.box = "ubuntu/20.04"
+    manager01.vm.provider "virtualbox" do |vb|
+      vb.name = "manager01"
+      vb.gui = false
+      vb.memory = "2048"
+      vb.cpus = 2
+  end
+  manager01.vm.synced_folder ".", "/home/vagrant/code", 
+    owner: "vagrant", group: "vagrant"
+  manager01.vm.network "public_network",
+    bridge: "Realtek PCIe GbE Family Controller"
+  manager01.vm.provision "shell", path: "provision_m.sh"
+end
+
+  config.vm.define "worker01" do |worker01|
+    worker01.vm.hostname = "worker1"
+    worker01.vm.box = "ubuntu/20.04"
+    worker01.vm.provider "virtualbox" do |vb|
+      vb.name = "worker01"
+      vb.gui = false
+      vb.memory = "1024"
+      vb.cpus = 1
+  end
+  worker01.vm.synced_folder ".", "/home/vagrant/code", 
+    owner: "vagrant", group: "vagrant"
+  worker01.vm.network "public_network",
+    bridge: "Realtek PCIe GbE Family Controller"
+  worker01.vm.provision "shell", path: "provision_w1.sh"
+end
+
+  config.vm.define "worker02" do |worker02|
+    worker02.vm.hostname = "worker2"
+    worker02.vm.box = "ubuntu/20.04"
+    worker02.vm.provider "virtualbox" do |vb|
+      vb.name = "worker02"
+      vb.gui = false
+      vb.memory = "1024"
+      vb.cpus = 1
+  end
+  worker02.vm.synced_folder ".", "/home/vagrant/code", 
+    owner: "vagrant", group: "vagrant"
+  worker02.vm.network "public_network",
+    bridge: "Realtek PCIe GbE Family Controller"
+  worker02.vm.provision "shell", path: "provision_w2.sh"
+  end
+end
