@@ -1,0 +1,13 @@
+---
+# tasks file for apache
+
+    - name: Install
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+      become: yes
+
+    - name: Start
+      ansible.builtin.service:
+        name: apache2
+        state: started

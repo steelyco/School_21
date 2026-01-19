@@ -1,0 +1,19 @@
+---
+# tasks file for postgres
+
+- name: Install postgres
+  ansible.builtin.apt:
+    name: postgresql
+  become: yes
+
+- name: Create database
+  shell: sudo -u postgres createdb test_db || true
+  become: yes
+
+- name: Create table
+  shell: sudo -u postgres psql -d test_db -c "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50) NOT NULL, last_name VARCHAR(100) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);"
+  become: yes
+
+- name: Insert data
+  shell: sudo -u postgres psql -d test_db -c "INSERT INTO users (first_name, last_name) VALUES ('amir', 'haziev'), ('ivan', 'petrov'), ('maria', 'sidorova') ON CONFLICT DO NOTHING;" 
+  become: yes

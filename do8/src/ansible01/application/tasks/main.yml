@@ -1,0 +1,27 @@
+---
+# tasks file for application
+
+    - name: Install
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: latest
+
+    - name: Copy file
+      ansible.builtin.copy:
+        src: files/docker-compose.yml
+        dest: /home/vagrant
+        mode: '0644'
+
+    - name: Copy nginx.conf
+      ansible.builtin.copy:
+        src: files/nginx.conf
+        dest: /home/vagrant/
+        mode: '0644'
+
+    - name: Up app
+      command: docker-compose up -d
+      args:
+        chdir: /home/vagrant
+      become: yes

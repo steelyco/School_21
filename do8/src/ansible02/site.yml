@@ -1,0 +1,23 @@
+- name: Role_1
+  hosts: consul_service
+  roles:
+    - install_consul_server
+
+- name: Role_2
+  hosts: 
+    - api
+    - db
+  roles:
+    - install_consul_client
+
+- name: Role_3
+  hosts: 
+    - db
+  roles:
+    - install_db
+
+- name: Role_4
+  hosts: 
+    - api
+  roles: 
+    - install_hotels_service

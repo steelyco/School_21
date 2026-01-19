@@ -1,0 +1,27 @@
+- name: My first playbook
+  hosts: service
+  become: yes
+
+  tasks:
+    
+    - name: Update
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Copy 
+      ansible.builtin.copy:
+        src: /home/vagrant/code/docker-compose.yml
+        dest: /home/vagrant
+        mode: '0644'
+
+    - name: Up app
+      command: docker-compose up 
+      args:
+        chdir: /home/vagrant

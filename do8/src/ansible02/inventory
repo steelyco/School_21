@@ -1,0 +1,8 @@
+[consul]
+consul_service
+
+[db] 
+db
+
+[api]
+api

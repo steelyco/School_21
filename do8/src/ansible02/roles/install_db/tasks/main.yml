@@ -1,0 +1,24 @@
+---
+# tasks file for postgres
+
+- name: Install postgres
+  become: yes
+  apt:
+    name: postgresql
+    state: present
+    update_cache: yes
+
+- name: Run postgres
+  become: yes
+  service: 
+    name: postgresql
+    state: started 
+    enabled: yes
+
+- name: Create database
+  shell: sudo -u postgres createdb hotels_db || true
+  become: yes
+
+- name: Set password for postgres user
+  become: yes
+  shell: sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"

@@ -1,0 +1,46 @@
+---
+# tasks file for install_hotels_service
+
+- name: Install openjdk
+  ansible.builtin.apt:
+    name: openjdk-8-jdk
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Copy src
+  become: yes
+  ansible.builtin.copy:
+    src: /home/vagrant/src/services/hotel-service
+    dest: /home/vagrant/service
+    mode: '0755'
+
+- name: Build app
+  shell: ./mvnw package -DskipTests
+  args:
+    chdir: /home/vagrant/service/hotel-service
+  become: yes
+
+- name: Set global environment variables in /etc/environment
+  become: yes
+  lineinfile:
+    path: /etc/environment
+    line: "{{ item }}"
+    state: present
+  loop:
+    - POSTGRES_HOST="127.0.0.1"
+    - POSTGRES_PORT="5432"
+    - POSTGRES_DB="hotels_db"
+    - POSTGRES_USER="postgres"
+    - POSTGRES_PASSWORD="postgres"
+
+- name: Source /etc/environment
+  shell: . /etc/environment
+  args:
+    executable: /bin/bash
+
+- name: Up app
+  become: yes
+  shell: nohup java -jar /home/vagrant/service/hotel-service/target/hotel-service-0.0.1-SNAPSHOT.jar &
+  async: 10
+  poll: 0

@@ -1,0 +1,10 @@
+- name: Role_1
+  hosts: service
+  roles:
+    - application
+
+- name: Role_2
+  hosts: db
+  roles:
+    - apache
+    - postgres

@@ -1,0 +1,69 @@
+---
+# tasks file for application
+- name: Wait for apt to be available
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Create consul user
+  become: yes
+  user:
+    name: consul
+    system: yes
+    home: /etc/consul.d
+    shell: /bin/false
+    state: present
+
+- name: Create consul directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: consul
+    group: consul
+    mode: 0750
+  loop:
+    - /opt/consul
+    - /opt/consul/data
+    - /etc/consul.d
+    - /var/run/consul
+
+- name: Copy consul binary
+  become: yes
+  copy:
+    src: consul
+    dest: /usr/local/bin/consul
+    owner: root
+    group: root
+    mode: 0755
+    backup: yes
+
+- name: Copy consul server configuration
+  become: yes
+  copy:
+    src: consul.hcl
+    dest: /etc/consul.d/consul.hcl
+    owner: consul
+    group: consul
+    mode: 0640
+
+- name: Create systemd service file
+  become: yes
+  copy:
+    src: consul.service
+    dest: /etc/systemd/system/consul.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: Start and enable consul service
+  become: yes
+  systemd:
+    name: consul
+    state: started
+    enabled: yes
