@@ -1,0 +1,25 @@
+auth_enabled: false  # Отключает аутентификацию
+
+server:
+  http_listen_port: 3100  # Порт, на котором работает сервер
+
+ingester:  # Обработка и хранение логов в памяти перед записью на диск
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+
+schema_config:  # Схема хранения данных
+  configs:
+    - from: 2025-12-13
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h 
+
+storage_config:  # Пути к данным на диске
+  filesystem:
+    directory: /loki/chunks
+

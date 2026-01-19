@@ -1,0 +1,36 @@
+server:
+  http_listen_port: 9080    # Порт, который слушает
+
+positions:
+  filename: /tmp/positions.yaml   # Файл, где хранится позиция каждого лога 
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push.  # Куда отправляется лог 
+
+scrape_configs:   # Секция что и как собирать
+  # Логи Docker контейнеров
+  - job_name: docker
+    docker_sd_configs:    # Docker Service Discovery - автоматическое обнаружение 
+      - host: unix:///var/run/docker.sock  # Подключается к Docker 
+        refresh_interval: 5s
+    relabel_configs:  # 
+      - source_labels: ['__meta_docker_container_name'] # Извлекаем имя контейнера 
+        regex: '/(.*)'
+        target_label: 'container'
+      - source_labels: ['__meta_docker_container_label_com_docker_stack_namespace'] # Извлекаем имя стека Docker Swarm
+        target_label: 'stack'
+      - source_labels: ['__meta_docker_container_label_com_docker_swarm_service_name'] # Извлекаем имя сервиса Docker Swarm
+        target_label: 'service'
+      - source_labels: ['__meta_docker_container_image'] # Извлекаем образ контейнера 
+        target_label: 'image'
+    pipeline_stages:
+      - docker: {} # Обработка логов в обычный текст
+
+  # Системные логи
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          __path__: /var/log/*.log

@@ -1,0 +1,119 @@
+# Настройки интервала, как часто собирать и как частро проверять правила
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Секция для алертов - Куда отправлять алерты 
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+rule_files:           # Где искать правила алертов 
+  - "alerts.yml"
+
+# Мониторит сам себя - Чтобы видеть не перегружен ли Prometheus
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+# Собирает метрики loki 
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']
+
+# Собирает метрики, можно понять что с ним не так
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['alertmanager:9093']
+
+# Собирает метрики серверов (CPU, память, диски, сеть). Имя как в monitoring.yml. Стандартный порт.
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: 
+        - 192.168.1.144:9100
+        - 192.168.1.174:9100
+        - 192.168.1.175:9100
+
+# Собирает метрики контейнеров (ресурсы каждого контейнера). Имя как в monitoring.yml. Стандартный порт.
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: 
+        - 192.168.1.144:8080
+        - 192.168.1.174:8080
+        - 192.168.1.175:8080
+        
+# Собирает метрики о работе blackbox-exporter. Чтобы видеть не перегружен ли blackbox
+  - job_name: 'blackbox'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['blackbox-exporter:9115']
+
+# Собирает метрики приложения. '/actuator/prometheus' - эндпоинт Spring Boot Actuator, который устанавливал в pom.xml, Имена сервисов - как в вашем Docker Compose
+  - job_name: 'microservices'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'session:8081'
+          - 'gateway:8087'
+          - 'booking:8083'
+          - 'hotel:8082'
+          - 'payment:8084'
+          - 'loyalty:8085'
+          - 'report:8086'
+    scrape_interval: 10s
+
+# Пожалуй две сложные секции. Собирает метрики не самого сервиса blackbox, а проверяет внешние сервисы
+  - job_name: 'blackbox-http'
+    metrics_path: /probe
+    params:
+      # Использовать модуль "http_2xx" для проверки HTTP 200 OK
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://google.com
+          - http://gateway:8087/actuator/health
+          - http://session:8081/actuator/health
+          - http://hotel:8082/actuator/health
+          - http://booking:8083/actuator/health
+          - http://payment:8084/actuator/health
+          - http://loyalty:8085/actuator/health
+          - http://report:8086/actuator/health
+    # Правила переименования меток (магия Prometheus)
+    relabel_configs:
+      # Взять исходный адрес (например http://gateway:8087/actuator/health)
+      # и сохранить как параметр __param_target
+      - source_labels: [__address__]
+        target_label: __param_target
+      # Взять параметр __param_target и сохранить как метку instance
+      # (чтобы в метриках видеть какой именно URL проверялся)
+      - source_labels: [__param_target]
+        target_label: instance
+      # Заменить исходный адрес на адрес blackbox-exporter
+      # (чтобы Prometheus обращался к blackbox, а не напрямую к целям)
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  - job_name: 'blackbox-tcp'
+    metrics_path: /probe
+    params:
+      # Использовать модуль "tcp_connect" для проверки доступности портов
+      module: [tcp_connect]
+    static_configs:
+       # Проверить доступность порта 5672 RabbitMQ и доступность порта 5432 PostgreSQL
+      - targets:
+          - postgres:5432
+          - rabbitmq:5672
+    # Те же правила переименования что и для HTTP проверок
+    relabel_configs:
+      # Взять адрес цели (postgres:5432) и сделать параметром
+      - source_labels: [__address__]
+        target_label: __param_target
+      # Сохранить исходный адрес как метку instance
+      - source_labels: [__param_target]
+        target_label: instance
+      # Перенаправить запрос на blackbox-exporter
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

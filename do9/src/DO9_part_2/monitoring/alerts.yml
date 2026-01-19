@@ -1,0 +1,35 @@
+groups:
+  - name: alert_rules
+    rules:
+      # Имя алерта
+      - alert: LowMemory
+      # Выражение алерта, которая проверяет кол-во места на диске
+        expr: node_memory_MemAvailable_bytes < 100 * 1024 * 1024
+      # Время, через которое алерт отправится 
+        for: 1m
+      # Приоритет алерта 
+        labels:
+          severity: warning
+        annotations:
+        # Короткое описание
+          summary: "Меньше 100Мб"
+        # Подробное описание
+          description: "Доступной памяти осталось меньше 100Мб"
+      
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) > 1 * 1024 * 1024 * 1024
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Затраченная RAM больше 1ГБ"
+          description: "Затраченная RAM больше 1ГБ"
+      
+      - alert: HighCPUUsage
+        expr: sum by(container_label_com_docker_compose_service) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service!=""}[5m])) * 100 > 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Использование CPU по сервису превышает 10%"
+          description: "Использование CPU по сервису превышает 10%"

@@ -1,0 +1,135 @@
+services:
+# Собирает метрики, хранит историю, Позволяет искать события в прошлом, Предоставляет UI
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus_data:/prometheus
+    networks:
+      - monitoring
+      - dbnet
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
+# Визуализация всех метрик в графиках и дашбордах
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+# Переменные окружения для безопатности - пароль; запрещена регистрация
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana 
+    networks:
+      - monitoring
+      - dbnet
+    deploy:
+      placement:
+        constraints:
+# Роль только на менеджере
+          - node.role == manager 
+
+# Cобирает и хранит логи всех контейнеров в одном месте, настраивать не надо
+  loki:
+    image: grafana/loki:3.6.3
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+      - ./loki-config.yaml:/etc/loki/config.yaml
+    networks:
+      - monitoring
+
+# Читает логи из контейнеров Docker
+# Отправляет их в Loki
+  promtail:
+    image: grafana/promtail:3.6.3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./promtail-config.yaml:/etc/promtail/config.yaml
+    networks:
+      - monitoring
+
+# Собирает метрики CPU, памяти, дисков, сети по умолчанию
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"    
+# Нужно пропысывать volumes и command для того, чтобы экспортер видел 
+# внутренности системы и контейнеров
+# Эти строчки дают ему доступ
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+    networks:
+      - monitoring
+    deploy:
+      mode: global
+
+# Собирает метрики КАЖДОГО контейнера, используются настройки по умолчанию, 
+# cAdvisor показывает КТО виноват в проблеме
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8080:8080"    
+# Стандартные настройки, так же для доступа как и в нод-экспортере 
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+# Нужна такая настройка, чтобы было больше информации
+    privileged: true
+    networks:
+      - monitoring
+    deploy:
+      mode: global
+
+# Проверяет доступность сервисов извне, поэтому указана вторая сеть, Не знает куда ходить - надо прописывать пути в prometheus.yml
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml:ro
+    networks:
+      - monitoring
+      - dbnet
+
+# Получает алерты от Prometheus
+# Отправляет уведомления email
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - monitoring
+
+# Нужны для того чтобы сохранялись логи
+volumes:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+
+# Сетевые настройки
+networks:
+  monitoring:
+    driver: overlay
+  dbnet:
+    external: true
+    name: app_dbnet

@@ -1,0 +1,20 @@
+global:
+  smtp_smarthost: 'smtp.mail.ru:587'       
+  smtp_from: 'asdfk98@mail.ru' 
+  smtp_auth_username: 'asdfk98@mail.ru'   
+  smtp_auth_password: 'kjhFGKHAS29802ASDJ' 
+  smtp_require_tls: true
+
+# Указывае маршрут и как группировать алерт
+route:
+  receiver: 'steelyco'
+  group_by: ['alertname']
+  group_wait: 10s 
+  group_interval: 10s         
+  continue: false
+
+# Определяем какой маршрут к кому и как пойдет
+receivers:
+  - name: 'steelyco'
+    email_configs:
+      - to: 'asdfk98@mail.ru'
