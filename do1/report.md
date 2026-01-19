@@ -4,7 +4,7 @@
 - Программа для виртуализации — **VirtualBox ver. 7.1.8**
 - Выполнил команду **`cat /etc/issue`**
 
-![ ](screenshots/Pasted image 20250425103853.png)
+![ ](screenshots/Pasted%20image%2020250425103853.png)
 
 ## Part 2. Установка ОС
 
@@ -12,41 +12,41 @@
 - Добавил пользователя в группу adm - **`sudo usermod -aG adm amir`**
 - Проверил, что пользователь добавлен в группу - **`groups amir`** 
 
-![ ](screenshots/Pasted image 20250425104115.png)
+![ ](screenshots/Pasted%20image%2020250425104115.png)
 
 - Вывел список пользователей - **`cat /etc/passwd`**  
 
-![ ](screenshots/Pasted image 20250425104229.png)
+![ ](screenshots/Pasted%20image%2020250425104229.png)
 
 ## Part 3. Настройка сети ОС
 
 - Поменял имя машины на steelyco-1 - **`hostnamectl set-hostname steelyco-1`**
 	1. Проверил название хоста   
-	![ ](screenshots/Pasted image 20250425104601.png)
+	![ ](screenshots/Pasted%20image%2020250425104601.png)
 	2. Переименовал  
-	![ ](screenshots/Pasted image 20250425104651.png)
+	![ ](screenshots/Pasted%20image%2020250425104651.png)
 - Установил временную зону МСК - **`sudo timedatectl set-timezone Europe/Moscow`**  
-![ ](screenshots/Pasted image 20250425104940.png)
+![ ](screenshots/Pasted%20image%2020250425104940.png)
 - Вывел название сетевых интерфейсов - **`ip link show`** 
-![ ](screenshots/Pasted image 20250425105419.png)
+![ ](screenshots/Pasted%20image%2020250425105419.png)
 - Вывел ip адрес устройства от DHCP-сервера - **`sudo dhclient -v`** 
-![ ](screenshots/Pasted image 20250425105516.png)
+![ ](screenshots/Pasted%20image%2020250425105516.png)
 - Вывел внешний и внутренний ip адрес шлюза - **`curl ifconfig.me`**, **`ip route show`** 
-![ ](screenshots/Pasted image 20250425105643.png)
+![ ](screenshots/Pasted%20image%2020250425105643.png)
 - Задал статичные настройки ip, gw, dns: 
 	1. Открыл с помощью редактора vim файл *`/etc/netplan/00-installer-config.yaml`* 
 	
-	![ ](screenshots/Pasted image 20250425110523.png)
+	![ ](screenshots/Pasted%20image%2020250425110523.png)
 	
 	2. Сохранил и применил новые настройки сети - **`sudo netplan apply`**
 	3. Перезагрузил виртуальную машину - **`reboot`**
 	4. Проверил настройки сети: 
 	
-	![ ](screenshots/Pasted image 20250425111340.png)
+	![ ](screenshots/Pasted%20image%2020250425111340.png)
 
 - Перезагрузил и пропинговал удаленные хосты - **`ping 1.1.1.1`**, **`ping ya.ru`** 
 
-![ ](screenshots/Pasted image 20250425111314.png)
+![ ](screenshots/Pasted%20image%2020250425111314.png)
 
 - **Интерфейс lo** -  (loopback) присутствует на всех системах. Он используется для тестирования и диагностики сетевых приложений и служб на локальном компьютере.
 - **Основные функции интерфейса lo:**
@@ -65,24 +65,24 @@
 ## Part 4. Обновление ОС
 
 - Проверка обновления новых системных пакетов - **`sudo apt update`** 
-![ ](screenshots/Pasted image 20250425112452.png)
+![ ](screenshots/Pasted%20image%2020250425112452.png)
 - Обновление пакетов - **`sudo apt upgrate`** 
 - Повторная проверка - **`sudo apt update`** 
 
-![ ](screenshots/Pasted image 20250425112923.png)
+![ ](screenshots/Pasted%20image%2020250425112923.png)
 
 ## Part 5. Использование команды sudo
 
 - Добавил пользователя в группу sudo - **`sudo usermod -aG sudo amir`** 
 
-![ ](screenshots/Pasted image 20250425113618.png)
+![ ](screenshots/Pasted%20image%2020250425113618.png)
 
 - Сменил пользователя командой sudo - **`sudo su - amir`** 
 
-![ ](screenshots/Pasted image 20250425114612.png)
+![ ](screenshots/Pasted%20image%2020250425114612.png)
 
 - Сменил *hostname* от пользователя *amir* созданного в *Part 2* - **`sudo hostnamectl sethostname amirserv`** 
-![ ](screenshots/Pasted image 20250425114946.png)
+![ ](screenshots/Pasted%20image%2020250425114946.png)
 - **Основные преимущества использования sudo:**
 	- Безопасность: Вместо того чтобы постоянно работать под учетной записью root, пользователи могут временно получать привилегии суперпользователя только для выполнения конкретных команд. Это снижает риск случайных или вредоносных изменений в системе.
     
@@ -94,63 +94,63 @@
 
 - Вывел время часового пояса МСК - **`timedate`**, **`timedatectl`** 
 
-![ ](screenshots/Pasted image 20250425115441.png)
+![ ](screenshots/Pasted%20image%2020250425115441.png)
 
 ## Part 7. Установка и использование текстовых редакторов
 
 - Установил текстовые редакторы - **`sudo apt install vim`**, **`sudo apt install nano`**, **`sudo apt install joe`** 
-![ ](screenshots/Pasted image 20250425115742.png)
+![ ](screenshots/Pasted%20image%2020250425115742.png)
 
 - Создал три текстовых документа - **`touch`** 
 
-![ ](screenshots/Pasted image 20250425120020.png)
+![ ](screenshots/Pasted%20image%2020250425120020.png)
 
 - Для того чтобы выйти из редактора *vim* с сохранением использовал **`:wq`** 
-![ ](screenshots/Pasted image 20250425120213.png)
--  Для того чтобы выйти из редактора *nano* с сохранением использовал **`CTRL+O`, `CTRL+X`** ![ ](screenshots/Pasted image 20250425120447.png)
-- Для того чтобы выйти из редактора *joe* с сохранением использовал **`CTRL+K D`**, **`CTRL+K X`** ![ ](screenshots/Pasted image 20250425121025.png)
+![ ](screenshots/Pasted%20image%2020250425120213.png)
+-  Для того чтобы выйти из редактора *nano* с сохранением использовал **`CTRL+O`, `CTRL+X`** ![ ](screenshots/Pasted%20image%2020250425120447.png)
+- Для того чтобы выйти из редактора *joe* с сохранением использовал **`CTRL+K D`**, **`CTRL+K X`** ![ ](screenshots/Pasted%20image%2020250425121025.png)
 - Выход без сохранений *vim* - **`:q!`** 
-![ ](screenshots/Pasted image 20250425121820.png)
+![ ](screenshots/Pasted%20image%2020250425121820.png)
 - Выход без сохранений *nano* - **`CTRL+X`**, **`n`** 
-![ ](screenshots/Pasted image 20250425121720.png)
+![ ](screenshots/Pasted%20image%2020250425121720.png)
 - Выход без сохранений *joe* - **`CTRL+C`**, **`y`** 
-![ ](screenshots/Pasted image 20250425121233.png)
+![ ](screenshots/Pasted%20image%2020250425121233.png)
 - Поиск и замена *vim* - **`/`**,  **`:s/старое/новое`** 
-![ ](screenshots/Pasted image 20250425123918.png)![ ](screenshots/Pasted image 20250425123744.png)
+![ ](screenshots/Pasted%20image%2020250425123918.png)![ ](screenshots/Pasted%20image%2020250425123744.png)
 - Поиск и замена *nano* -  **`Ctrl+W`**, **`Ctrl+\`**, **`Y`**  
-![ ](screenshots/Pasted image 20250425123415.png) 
-![ ](screenshots/Pasted image 20250425123549.png)
+![ ](screenshots/Pasted%20image%2020250425123415.png) 
+![ ](screenshots/Pasted%20image%2020250425123549.png)
 - Поиск и замена *joe* - **`Ctrl+K F`**, **`R`**, **`Y`** 
-![ ](screenshots/Pasted image 20250425122833.png) 
-![ ](screenshots/Pasted image 20250425123100.png)
+![ ](screenshots/Pasted%20image%2020250425122833.png) 
+![ ](screenshots/Pasted%20image%2020250425123100.png)
 
 ## Part 8. Установка и базовая настройка сервиса SSHD
 
 - Установил службу SSHd - **`sudo apt install openssh-server`** 
 
-![ ](screenshots/Pasted image 20250425125554.png)
+![ ](screenshots/Pasted%20image%2020250425125554.png)
 
 - Добавил службу SSHd в автозагрузку - **`sudo systemctl enable ssh`** 
 
-![ ](screenshots/Pasted image 20250425130947.png)
+![ ](screenshots/Pasted%20image%2020250425130947.png)
 
 - Проверил автозагрузку - **`sudo systemctl is-enabled ssh`**  
 
-![ ](screenshots/Pasted image 20250425131040.png)
+![ ](screenshots/Pasted%20image%2020250425131040.png)
 
 - Перенастроил службу SSHd на порт 2022 в файле */etc/ssh/sshd_config* - **`sudo vim /etc/ssh/sshd_config`** 
 
-![ ](screenshots/Pasted image 20250425132719.png)
+![ ](screenshots/Pasted%20image%2020250425132719.png)
 
 - Применил настройку sshd - **sudo systemctl restart ssh**
 - Используя команду **`ps`** отобразил наличие процесса *sshd* 
 
-![ ](screenshots/Pasted image 20250425131831.png)
+![ ](screenshots/Pasted%20image%2020250425131831.png)
 
 - Установил *net-tools*, чтобы заработала команда *netstat* - **`sudo apt install net-tools`** 
 - Вывел команду **`netstat -tan`** 
 
-![ ](screenshots/Pasted image 20250425132801.png)
+![ ](screenshots/Pasted%20image%2020250425132801.png)
 
 - **Пояснение команды `ps` и ключей:**
 
@@ -181,9 +181,9 @@
 
 - Установил утилиту **`top`** и **`htop`** 
 
-![ ](screenshots/Pasted image 20250425134323.png) 
+![ ](screenshots/Pasted%20image%2020250425134323.png) 
 
-![ ](screenshots/Pasted image 20250425134302.png)
+![ ](screenshots/Pasted%20image%2020250425134302.png)
 
 - Вывод команды **`top`**: 
 	1. Uptime - **`23 min`**
@@ -195,31 +195,31 @@
 	7. Pid процесса занимающего больше всего памяти - **`723`** - **`Shift + M`**
 	8. Pid процесса, занимающего больше всего процессорного времени - **`1357`** 
 
-	![ ](screenshots/Pasted image 20250425134745.png)
+	![ ](screenshots/Pasted%20image%2020250425134745.png)
 
 - Вывод команды **`htop`**: 
 
 	1. **`PID`**: 
-	![ ](screenshots/Pasted image 20250425135911.png)
+	![ ](screenshots/Pasted%20image%2020250425135911.png)
 	2. **`PERCENT_CPU`**: 
-	![ ](screenshots/Pasted image 20250425140050.png)
+	![ ](screenshots/Pasted%20image%2020250425140050.png)
 	3. **`PERCENT_MEM`**: 
-	![ ](screenshots/Pasted image 20250425140104.png)
+	![ ](screenshots/Pasted%20image%2020250425140104.png)
 	4. **`TIME`**: 
-	![ ](screenshots/Pasted image 20250425140117.png)
+	![ ](screenshots/Pasted%20image%2020250425140117.png)
 	5. **`sshd`**: 
-	![ ](screenshots/Pasted image 20250425140234.png)
+	![ ](screenshots/Pasted%20image%2020250425140234.png)
 	6. **`syslog`**: 
-	![ ](screenshots/Pasted image 20250425140324.png)
+	![ ](screenshots/Pasted%20image%2020250425140324.png)
 	7. **`hostname, clock и uptime`**: 
 
-	![ ](screenshots/Pasted image 20250425140625.png)
+	![ ](screenshots/Pasted%20image%2020250425140625.png)
 
 
 ## Part 10. Использование утилиты fdisk
 
 - Запустил команду **`fdisk -l`** 
-![ ](screenshots/Pasted image 20250425140906.png)
+![ ](screenshots/Pasted%20image%2020250425140906.png)
 - Название жесткого диска - *sda*
 - Размер - *50 GB*
 - Количество секторов - *104857600*
@@ -229,7 +229,7 @@
 
 - Запустил команду **`df`**: 
 
-![ ](screenshots/Pasted image 20250425141826.png)
+![ ](screenshots/Pasted%20image%2020250425141826.png)
 
 	1. Размер раздела - *24590672 KB*
 	2. Размер занятого пространства - *6779076 KB*
@@ -237,7 +237,7 @@
 	4. Процент использования - *30%*
 - Запустил команду **`df -Th`**: 
 
-![ ](screenshots/Pasted image 20250425141852.png)
+![ ](screenshots/Pasted%20image%2020250425141852.png)
 
 	1. Размер раздела - *25 GB*
 	2. Размер занятого пространства - *6.5 GB*
@@ -249,39 +249,39 @@
 
 - Запустил команду **`du`** 
 
-![ ](screenshots/Pasted image 20250425142604.png)
+![ ](screenshots/Pasted%20image%2020250425142604.png)
 
 - Размер папок */home, /var, /var/log* в байтах 
 
-![ ](screenshots/Pasted image 20250425143502.png)
+![ ](screenshots/Pasted%20image%2020250425143502.png)
 
 - Размер папок */home, /var, /var/log* в человеческом виде 
 
-![ ](screenshots/Pasted image 20250425143551.png)
+![ ](screenshots/Pasted%20image%2020250425143551.png)
 
 -  Размер каждого файла в */var/log* 
 
-![ ](screenshots/Pasted image 20250425143803.png)
+![ ](screenshots/Pasted%20image%2020250425143803.png)
 
 ## Part 13. Использование утилиты ncdu
 
 - Установил *ncdu* - **`sudo apt install ncdu`** 
-![ ](screenshots/Pasted image 20250425144114.png)
+![ ](screenshots/Pasted%20image%2020250425144114.png)
 - Вывод папок */home, /var, /var/log* 
-![ ](screenshots/Pasted image 20250425144233.png) 
-![ ](screenshots/Pasted image 20250425144256.png) 
-![ ](screenshots/Pasted image 20250425144313.png)
+![ ](screenshots/Pasted%20image%2020250425144233.png) 
+![ ](screenshots/Pasted%20image%2020250425144256.png) 
+![ ](screenshots/Pasted%20image%2020250425144313.png)
 
 ## Part 14. Работа с системными журналами
 
 - */var/log/dmesg* 
-![ ](screenshots/Pasted image 20250425150243.png)
+![ ](screenshots/Pasted%20image%2020250425150243.png)
 - */var/log/syslog* 
-До перезапуска **`sshd`** ![ ](screenshots/Pasted image 20250425145423.png)После перезапуска **`sshd`** 
-![ ](screenshots/Pasted image 20250425145550.png)
+До перезапуска **`sshd`** ![ ](screenshots/Pasted%20image%2020250425145423.png)После перезапуска **`sshd`** 
+![ ](screenshots/Pasted%20image%2020250425145550.png)
 - */var/log/auth.log* 
 
-![ ](screenshots/Pasted image 20250425145723.png)
+![ ](screenshots/Pasted%20image%2020250425145723.png)
 
 	1. Время успешной авторизации - Apr 25 15:56:57 
 	2. Имя пользователя - amir
@@ -291,8 +291,8 @@
 
 - Открыл и добавил команду *uptime* каждые две минуты в файл *crontab* 
 
-![ ](screenshots/Pasted image 20250425150813.png)
+![ ](screenshots/Pasted%20image%2020250425150813.png)
 
 - Вывод в логах то, что срабатывает *uptime* каждые две минуты 
 
-![ ](screenshots/Pasted image 20250425151131.png) 
+![ ](screenshots/Pasted%20image%2020250425151131.png) 
