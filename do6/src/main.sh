@@ -1,0 +1,2 @@
+sshpass -p "1" scp -o StrictHostKeyChecking=no $CI_PROJECT_DIR/src/02/DO steelyco@192.168.1.113:/tmp/
+sshpass -p "1" ssh -o StrictHostKeyChecking=no steelyco@192.168.1.113 "echo '1' | sudo -S mv /tmp/DO /usr/local/bin/"
