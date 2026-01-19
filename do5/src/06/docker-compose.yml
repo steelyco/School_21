@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+  part1: 
+    build: .
+    networks:
+      - app_net
+ 
+  part2:
+    image: nginx:1.29
+    ports:
+      - "80:8080"
+    volumes:
+      - ./nginx2.conf:/etc/nginx/nginx.conf
+    networks:
+      - app_net
+    depends_on:
+      - part1
+
+networks:
+  app_net:
+    driver: bridge
